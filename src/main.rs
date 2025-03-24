@@ -5,8 +5,6 @@ use toml;
 use serde::Deserialize;
 use std::error::Error;
 
-// TODO: Passage handling (multiple verses / single verses, multiple chapters / single chapter)
-
 #[derive(Deserialize, Debug)]
 struct Config {
     tokens: Tokens
@@ -58,13 +56,14 @@ fn get_esv_api_key() -> Result<String, Box<dyn Error>> {
 }
 
 
-async fn get_request() -> Value {
+async fn get_request(passage_desc: &str) -> Value {
 
     let esv_api_key = get_esv_api_key();
 
+    let passage_url = format!("https://api.esv.org/v3/passage/text/?q={}", passage_desc);
     let client = reqwest::Client::new();
     let response = client
-        .get("https://api.esv.org/v3/passage/text/?q=John+11-12")
+        .get(passage_url)
         .header(AUTHORIZATION, format!("Token {}", esv_api_key.unwrap()))
         .send()
         .await;
@@ -73,6 +72,8 @@ async fn get_request() -> Value {
         Ok(resp) => resp.text().await.unwrap_or_else(|_| "Failed to get text".to_string()),
         Err(_) => "Failed to send request".to_string(),
     };
+
+    // response_text
 
     // Parse the string of data into serde_json::Value.
     let v: Value = serde_json::from_str(&response_text).expect("Failed to parse JSON");
@@ -85,28 +86,9 @@ async fn get_request() -> Value {
 async fn main(){
     // let v = get_request().await;
     // println!("{}", v["passages"][0]);
-    let passage_desc = "John 11:35-37";
+    let passage_desc = "Psalm 1";
 
-    print!("{}\n", passage_desc);
-
-    let split: Vec<&str> = passage_desc.split(" ").collect();
-    let [book, start_end] = &split[..] else { return Err("Split") };
-
-    let start_end = split.get(1).unwrap();
-    let start_split: Vec<&str> = start_end.split("-").collect();
-    let start = start_split.get(0).unwrap();
-
-    print!("{}\n", book);
-    print!("{}", start);
-
-    // passage = Passage.from_str(&passage_desc);
-
+    println!("{}", passage_desc);
+    let text = get_request(passage_desc).await;
+    println!("{}", text["passages"][0]);
 }
-
-// 11:35 - 12:4
-// 11-12:4
-// 11:35 - 12
-// 11-12
-// 11:35-36
-// 11
-// 11:35
