@@ -15,34 +15,6 @@ struct Tokens {
     esv_api: String,
 }
 
-// struct Chapters {
-//     start_chapter: i32,
-//     end_chapter: i32
-// }
-
-// struct Verses {
-//     start_verse: i32,
-//     end_verse: i32,
-// }
-
-// struct Passage {
-//     book: String,
-//     chapters: Chapters,
-//     verses: Verses,
-// }
-
-// impl Passage {
-//     fn from_str(passage_descriptor: &str) -> Passage {
-
-//         let passage = Passage {
-//             book: ,
-//             chapter: ,
-//             verse: 
-//         }
-//     }
-// }
-
-
 fn load_config(filename: &str) -> Result<Config, String> {
     let contents: String = fs::read_to_string(filename).map_err(|_| format!("Unable to read file `{}`", filename))?;
     let config: Config = toml::from_str(&contents).map_err(|_| format!("Unable to load data from `{}`", filename))?;
@@ -73,8 +45,6 @@ async fn get_request(passage_desc: &str) -> Value {
         Err(_) => "Failed to send request".to_string(),
     };
 
-    // response_text
-
     // Parse the string of data into serde_json::Value.
     let v: Value = serde_json::from_str(&response_text).expect("Failed to parse JSON");
 
@@ -84,8 +54,6 @@ async fn get_request(passage_desc: &str) -> Value {
 
 #[tokio::main]
 async fn main(){
-    // let v = get_request().await;
-    // println!("{}", v["passages"][0]);
     let passage_desc = "Psalm 1";
 
     println!("{}", passage_desc);
