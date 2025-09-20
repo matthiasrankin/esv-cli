@@ -1,5 +1,5 @@
 [package]
-name = "daily-reading"
+name = "esv-cli"
 version = "0.1.0"
 edition = "2021"
 
@@ -12,3 +12,4 @@ serde_yaml = "0.8.7"
 toml = "0.8.19"
 tokio = { version = "1.38", features = ["full"] }
 reqwest = { version = "0.12.4" }
+dotenv = "0.15.0"
