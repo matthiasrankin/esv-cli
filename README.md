@@ -28,7 +28,7 @@ cargo build --release
 export PATH="<PATH/TO/REPO>/esv-cli/target/release:$PATH"
 ```
 
-### Calling
+### Example
 ```
 $ esv-cli "Romans 8:31-37"
 Romans 8:31–37
