@@ -10,7 +10,7 @@ use dotenv::dotenv;
 
 
 const BASE_URL: &str = "https://api.esv.org/v3/passage/text/?q=";
-const CONFIG_PATH: &str = "config.toml";
+const CONFIG_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/config.toml");
 
 #[derive(Deserialize)]
 struct APIConfig {
