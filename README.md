@@ -6,8 +6,7 @@ A command line interface for the ESV API.
 
 You must have an API token which should either be stored in a `config.toml`, e.g.:
 ```toml
-[tokens]
-esv_api_key=<YOUR API KEY>
+esv_api_key = <YOUR API KEY>
 ```
 or as an environment variable, e.g.:
 ```bash
