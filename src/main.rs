@@ -3,14 +3,15 @@ use reqwest::{header::AUTHORIZATION};
 use serde_json::Value;
 use serde::Deserialize;
 use std::env;
-
-extern crate dotenv;
-
 use dotenv::dotenv;
+
+pub mod tui;
+pub use tui::App;
 
 
 const BASE_URL: &str = "https://api.esv.org/v3/passage/text/?q=";
 const CONFIG_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/config.toml");
+
 
 #[derive(Deserialize)]
 struct APIConfig {
@@ -79,7 +80,7 @@ async fn get_passage_text(passage_config: &PassageConfig) -> Result<Value, Strin
 
 
 #[tokio::main]
-async fn main(){
+async fn main() -> std::io::Result<()> {
     dotenv().ok();
     let args: Vec<String> = env::args().collect();
 
@@ -88,19 +89,13 @@ async fn main(){
         std::process::exit(1);
     });
 
-    match get_passage_text(&config).await {
-        Ok(text) => {
-            if let Some(passages) = text["passages"].as_array() {
-                for passage in passages {
-                    if let Some(passage_str) = passage.as_str() {
-                        print!("{}", passage_str);
-                        print!("\n\n");
-                    }
-                }
-            } else {
-                eprintln!("No passages found in response.");
-            }
-        },
-        Err(e) => eprintln!("Error: {}", e),
-    }
+    let passages = get_passage_text(&config).await.unwrap_or_else(|err| {
+        eprintln!("Error fetching passage: {}", err);
+        std::process::exit(1);
+    })["passages"].as_array().unwrap().iter().map(|v| v.as_str().unwrap().to_string()).collect();
+
+    let mut terminal = ratatui::init();
+    let app_result = App::new(passages).run(&mut terminal);
+    ratatui::restore();
+    app_result
 }
