@@ -1,6 +1,6 @@
 [package]
 name = "esv-cli"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -13,3 +13,6 @@ toml = "0.8.19"
 tokio = { version = "1.38", features = ["full"] }
 reqwest = { version = "0.12.4" }
 dotenv = "0.15.0"
+crossterm = "0.29.0"
+ratatui = "0.29.0"
+color-eyre = "0.6.5"
